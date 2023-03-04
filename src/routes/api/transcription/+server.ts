@@ -3,16 +3,25 @@ import fs from 'fs';
 import { OPENAI_API_SECRET_KEY } from '$env/static/private';
 
 export const POST = async (event) => {
-  // const requestBody = await event.request.json();
+  // parse formData
+  const requestBody = await event.request.formData();
+
+  console.log('requestBody: ', requestBody);
+
+  const requestFile = requestBody.get('file');
 
   /**
    * Request config
    *
    * https://platform.openai.com/docs/api-reference/audio/create
    *
+   * Below this line needs to be refactored
+   *
    */
-  const buffer = fs.readFileSync('static/the-great-dictator.mp4');
-  const file = new Blob([buffer]);
+  const file = new Blob([requestFile], { type: 'video/mp4' });
+
+  // const buffer = fs.readFileSync('static/the-great-dictator.mp4');
+  // const file = new Blob([buffer]);
 
   const formData = new FormData();
   formData.append('file', file, 'test.wav');
