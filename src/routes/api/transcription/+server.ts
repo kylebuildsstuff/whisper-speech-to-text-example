@@ -6,10 +6,7 @@ export const POST = async (event) => {
   const requestFile = requestBody.get('file');
 
   /**
-   * Request config
-   *
-   * https://platform.openai.com/docs/api-reference/audio/create
-   *
+   * Request config.
    */
   const file = new Blob([requestFile], { type: 'video/mp4' });
 
@@ -19,7 +16,7 @@ export const POST = async (event) => {
   formData.append('language', 'en');
 
   /**
-   * https://platform.openai.com/docs/api-reference/audio/create?lang=node
+   * https://platform.openai.com/docs/api-reference/audio/create
    */
   const transcriptionResponse = await fetch(
     `https://api.openai.com/v1/audio/transcriptions`,
@@ -35,8 +32,6 @@ export const POST = async (event) => {
 
   const data = await transcriptionResponse.json();
   const transcribedText = data?.text || '';
-
-  console.log('data: ', data);
 
   return json({ transcribedText });
 };
