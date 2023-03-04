@@ -1,13 +1,8 @@
 import { json } from '@sveltejs/kit';
-import fs from 'fs';
 import { OPENAI_API_SECRET_KEY } from '$env/static/private';
 
 export const POST = async (event) => {
-  // parse formData
   const requestBody = await event.request.formData();
-
-  console.log('requestBody: ', requestBody);
-
   const requestFile = requestBody.get('file');
 
   /**
@@ -15,13 +10,8 @@ export const POST = async (event) => {
    *
    * https://platform.openai.com/docs/api-reference/audio/create
    *
-   * Below this line needs to be refactored
-   *
    */
   const file = new Blob([requestFile], { type: 'video/mp4' });
-
-  // const buffer = fs.readFileSync('static/the-great-dictator.mp4');
-  // const file = new Blob([buffer]);
 
   const formData = new FormData();
   formData.append('file', file, 'test.wav');
@@ -41,8 +31,9 @@ export const POST = async (event) => {
   });
 
   const data = await res.json();
+  const transcribedText = data?.text || '';
 
   console.log('data: ', data);
 
-  return json({});
+  return json({ transcribedText });
 };
