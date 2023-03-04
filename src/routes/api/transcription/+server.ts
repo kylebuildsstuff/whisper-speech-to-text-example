@@ -21,16 +21,19 @@ export const POST = async (event) => {
   /**
    * https://platform.openai.com/docs/api-reference/audio/create?lang=node
    */
-  const res = await fetch(`https://api.openai.com/v1/audio/transcriptions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${OPENAI_API_SECRET_KEY}`,
-      Accept: 'application/json'
-    },
-    body: formData
-  });
+  const transcriptionResponse = await fetch(
+    `https://api.openai.com/v1/audio/transcriptions`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${OPENAI_API_SECRET_KEY}`,
+        Accept: 'application/json'
+      },
+      body: formData
+    }
+  );
 
-  const data = await res.json();
+  const data = await transcriptionResponse.json();
   const transcribedText = data?.text || '';
 
   console.log('data: ', data);
