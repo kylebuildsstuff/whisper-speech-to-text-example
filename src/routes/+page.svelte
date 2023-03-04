@@ -1,9 +1,14 @@
 <script lang="ts">
+  let isLoading;
+
   let files;
+  let transcribedText = '';
 
   $: fileName = files && files[0] && files[0].name;
 
   const handleTranscription = async () => {
+    isLoading = true;
+
     const formData = new FormData();
     formData.append('file', files[0]);
 
@@ -12,8 +17,10 @@
       body: formData
     }).then((res) => res.json());
 
-    console.log('response: ', response);
+    transcribedText =
+      response?.transcribedText || 'Transcription could not be completed';
 
+    isLoading = false;
     return response;
   };
 </script>
@@ -66,13 +73,22 @@
   </span>
 
   <!-- Transcribe -->
-  <button
-    on:click={handleTranscription}
-    type="submit"
-    class="w-1/4 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-    >Transcribe</button
-  >
+  {#if isLoading}
+    <button
+      on:click={handleTranscription}
+      disabled
+      class="w-1/2 opacity-50 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >Transcribing...</button
+    >
+  {:else}
+    <button
+      on:click={handleTranscription}
+      type="submit"
+      class="w-1/2 rounded-md bg-indigo-600 py-2.5 px-3.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >Transcribe</button
+    >
+  {/if}
 </div>
 
 <!-- Text -->
-<section class="mt-5">Hello</section>
+<section class="mt-5">{transcribedText}</section>
